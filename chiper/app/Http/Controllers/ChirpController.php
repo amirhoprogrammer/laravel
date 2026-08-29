@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Chrip;
+use App\Models\Chirp;
 use Illuminate\Http\Request;
 
-class ChripController extends Controller
+class ChirpController extends Controller
 {
     //public function index()
     //{
@@ -35,7 +35,7 @@ class ChripController extends Controller
     //}
     public function index()
     {
-        $chirps = Chrip::with("user")
+        $chirps = Chirp::with("user")
             ->latest()
             ->take(50)
             ->get();

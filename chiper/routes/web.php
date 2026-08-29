@@ -1,10 +1,11 @@
 <?php
-use App\Http\Controllers\ChripController;
-use App\Http\Controllers\ChriperController;
+use App\Http\Controllers\ChirpController;
+use App\Http\Controllers\ChirperController;
+
 use Illuminate\Support\Facades\Route;
 
 //Route::get('/', function () {
 //    return view('home');
 //});
-//Route::get('/', [ChripController::class , 'index']);
-Route::get('/', [ChriperController::class , 'index']);
+Route::get('/', [ChirpController::class , 'index']);
+//Route::get('/', [ChirperController::class , 'index']);

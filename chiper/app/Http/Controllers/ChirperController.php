@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class ChriperController extends Controller
+class ChirperController extends Controller
 {
     /**
      * Display a listing of the resource.
