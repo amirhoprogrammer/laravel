@@ -46,11 +46,17 @@
                         <textarea
                             name="message"
                             placeholder="What's on your mind?"
-                            class="textarea textarea-bordered w-full resize-none"
+                            class="textarea textarea-bordered w-full resize-none @error('message') textarea-error @enderror"
                             rows="4"
                             maxlength="255"
                             required
-                        ></textarea>
+                        >{{ old('message') }}</textarea>
+
+                        @error('message')
+                            <div class="label">
+                                <span class="label-text-alt text-error">{{ $message }}</span>
+                            </div>
+                        @enderror
                     </div>
 
                     <div class="mt-4 flex items-center justify-end">
