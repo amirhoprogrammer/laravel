@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Chirp;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
 class ChirperController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
@@ -52,7 +54,6 @@ class ChirperController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request
         $validated = $request->validate([
             'message' => 'required|string|max:255|min:5',
         ], [
@@ -60,11 +61,16 @@ class ChirperController extends Controller
             'message.max' => 'Chirps must be 255 characters or less.',
         ]);
 
-        // Create the chirp (no user for now - we'll add auth later)
-        Chirp::create([
-            'message' => $validated['message'],
-            'user_id' => null, // We'll add authentication in lesson 11
-        ]);
+        //// Create the chirp (no user for now - we'll add auth later)
+        //Chirp::create([
+        //    'message' => $validated['message'],
+        //    'user_id' => null, // We'll add authentication in lesson 11
+        //]);
+
+        // Use the authenticated user
+        auth()->user()->chirps()->create($validated);
+
+        
 
         // Redirect back to the feed
         return redirect('/')->with('success', 'Chirp created!');
@@ -83,6 +89,7 @@ class ChirperController extends Controller
      */
     public function edit(Chirp $chirp)
     {
+        $this->authorize('update', $chirp);
         // We'll add authorization in lesson 11
         return view('chirps.edit', compact('chirp'));
     }
@@ -91,23 +98,31 @@ class ChirperController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Chirp $chirp)
-    {
-        if ($request->user()->cannot('update', $chirp)) {
-            abort(403);
-        }
-        //$this->authorize('update', $chirp);
-        // Validate the request
+    { 
+        //if ($request->user()->cannot('update', $chirp)) {
+        //    abort(403);
+        //}
+        $this->authorize('update', $chirp);
+
         $validated = $request->validate([
-            'message' => 'required|string|max:255|min:5',
-        ], [
-            'message.required' => 'Please write something to chirp!',
-            'message.max' => 'Chirps must be 255 characters or less.',
+        'message' => 'required|string|max:255',
         ]);
 
         $chirp->update($validated);
 
-        // Redirect back to the feed
-        return redirect('/')->with('success', 'Your chirp Updated');
+        return redirect('/')->with('success', 'Chirp updated!');    
+        // Validate the request
+        //$validated = $request->validate([
+        //    'message' => 'required|string|max:255|min:5',
+        //], [
+        //    'message.required' => 'Please write something to chirp!',
+        //    'message.max' => 'Chirps must be 255 characters or less.',
+        //]);
+
+        //$chirp->update($validated);
+
+        //// Redirect back to the feed
+        //return redirect('/')->with('success', 'Your chirp Updated');
         //
     }
 
@@ -116,8 +131,8 @@ class ChirperController extends Controller
      */
     public function destroy(Chirp $chirp)
     {
-        //$this->auth
-        ////authorize('delete', $chirp);
+        $this->authorize('delete', $chirp);
+
         $chirp->delete();
 
         // delete
